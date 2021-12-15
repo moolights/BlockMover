@@ -35,21 +35,58 @@ bool loadMedia();
 
 void close();
 
+SDL_Rect generateRect(int width, int height);
+
 SDL_Texture* loadTexture(std::string path);
 
 int main(int argv, char* argc[])
 {
+	if (!init())
+	{
+		printf("Failed to initialize systems\n");
+	}
+	else
+	{
+		if (!loadMedia())
+		{
+			printf("Failed to load media!\n");
+		}
+		else
+		{
+			bool isRunning = true;
+			SDL_Event e;
 
+			SDL_Rect dRect = generateRect(100, 100); // Square that moves
+			SDL_Rect sRect; // Square that is stationary
+
+			while (isRunning)
+			{
+				while (SDL_PollEvent(&e) != 0)
+				{
+					if (e.type == SDL_QUIT)
+					{
+						isRunning = false;
+					}
+					else if (e.type == SDL_KEYDOWN)
+					{
+						switch (e.key.keysym.sym)
+						{
+						case SDLK_UP:
+
+						case SDLK_DOWN:
+
+						case SDLK_RIGHT:
+
+						case SDLK_LEFT:
+						default:
+
+						}
+					}
+				}
+			}
+		}
+	}
 }
-
-
-
-
-
-
-
-
-
 
 bool init()
 {
@@ -57,7 +94,7 @@ bool init()
 
 	if (!SDL_Init(SDL_INIT_VIDEO))
 	{
-		printf("FAILED TO INITIALIZE! SDL Error: %s", SDL_GetError());
+		printf("FAILED TO INITIALIZE! SDL Error: %s\n", SDL_GetError());
 		success = false;
 	}
 	else
@@ -65,7 +102,7 @@ bool init()
 		gWindow = SDL_CreateWindow("Block Mover", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 		if (gWindow == NULL)
 		{
-			printf("Failed to create window! SDL Error: %s", SDL_GetError());
+			printf("Failed to create window! SDL Error: %s\n", SDL_GetError());
 			success = false;
 		}
 		else
@@ -75,7 +112,7 @@ bool init()
 			gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
 			if (gRenderer == NULL)
 			{
-				printf("Failed to create renderer! SDL Error: %s", SDL_GetError());
+				printf("Failed to create renderer! SDL Error: %s\n", SDL_GetError());
 				success = false;
 			}
 			else
@@ -85,7 +122,7 @@ bool init()
 				int imgFlags = IMG_INIT_PNG;
 				if (!(IMG_Init(imgFlags) & imgFlags))
 				{
-					printf("Failed to initialize IMG Systems! SDL_IMG Error: %s", IMG_GetError());
+					printf("Failed to initialize IMG Systems! SDL_IMG Error: %s\n", IMG_GetError());
 					success = false;
 				}
 			}
@@ -102,28 +139,28 @@ bool loadMedia()
 	gTextureSet[STATIC_SQUARE_TEXTURE] = loadTexture("grey.png");
 	if (gTextureSet[STATIC_SQUARE_TEXTURE] == NULL)
 	{
-		printf("Failed to load image %s. SDL Error: %s", "grey.png", SDL_GetError());
+		printf("Failed to load image %s. SDL Error: %s\n", "grey.png", SDL_GetError());
 		success = false;
 	}
 
 	gTextureSet[DYNAMIC_SQUARE_TEXTURE] = loadTexture("LaCroixKitten.png");
 	if (gTextureSet[DYNAMIC_SQUARE_TEXTURE] == NULL)
 	{
-		printf("Failed to load image %s. SDL Error: %s", "LaCroixKitten.png", SDL_GetError());
+		printf("Failed to load image %s. SDL Error: %s\n", "LaCroixKitten.png", SDL_GetError());
 		success = false;
 	}
 
 	gTextureSet[WINDOW_ERROR_TEXTURE] = loadTexture("red.png");
 	if (gTextureSet[WINDOW_ERROR_TEXTURE] == NULL)
 	{
-		printf("Failed to load image %s. SDL Error: %s", "red.png", SDL_GetError());
+		printf("Failed to load image %s. SDL Error: %s\n", "red.png", SDL_GetError());
 		success = false;
 	}
 
 	gTextureSet[WINDOW_SUCCESS_TEXTURE] = loadTexture("green.png");
 	if (gTextureSet[WINDOW_SUCCESS_TEXTURE] == NULL)
 	{
-		printf("Failed to load image %s. SDL Error: %s", "green.png", SDL_GetError());
+		printf("Failed to load image %s. SDL Error: %s\n", "green.png", SDL_GetError());
 		success = false;
 	}
 
@@ -162,7 +199,7 @@ SDL_Texture* loadTexture(std::string path)
 	SDL_Surface* loadedSurface = IMG_Load(path.c_str());
 	if (loadedSurface == NULL)
 	{
-		printf("Failed to load image %s. SDL_Image Error: %s", path.c_str(), IMG_GetError());
+		printf("Failed to load image %s. SDL_Image Error: %s\n", path.c_str(), IMG_GetError());
 	}
 	else
 	{
@@ -176,6 +213,18 @@ SDL_Texture* loadTexture(std::string path)
 	}
 
 	return newTexture;
+}
+
+SDL_Rect generateRect(int width, int height)
+{
+	SDL_Rect rect;
+
+	rect.w = width;
+	rect.h = height;
+	rect.x = (SCREEN_WIDTH - rect.w) / 2;
+	rect.y = (SCREEN_HEIGHT - rect.h) / 2;
+
+	SDL_RenderCopy(gRenderer, gTextureSet[DYNAMIC_SQUARE_TEXTURE], &rect, &rect);
 }
 
 
