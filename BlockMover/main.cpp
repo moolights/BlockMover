@@ -39,6 +39,8 @@ SDL_Rect generateRect(int width, int height, int randFlag);
 
 SDL_Texture* loadTexture(std::string path);
 
+bool collisionCheck(SDL_Rect& srcRect, SDL_Rect& destRect);
+
 int main(int argv, char* argc[])
 {
 	if (!init())
@@ -92,6 +94,8 @@ int main(int argv, char* argc[])
 					SDL_RenderCopy(gRenderer, gTextureSet[DYNAMIC_SQUARE_TEXTURE], NULL, &dRect);
 					SDL_RenderCopy(gRenderer, gTextureSet[STATIC_SQUARE_TEXTURE], NULL, &sRect);
 					SDL_RenderPresent(gRenderer);
+
+					collisionCheck(dRect, sRect);
 				}
 			}
 		}
@@ -235,6 +239,7 @@ SDL_Rect generateRect(int width, int height)
 	return rect;
 }
 
+// Fix where square spawns
 SDL_Rect generateRect(int width, int height, int randFlag)
 {
 	SDL_Rect rect;
@@ -259,8 +264,8 @@ SDL_Rect generateRect(int width, int height, int randFlag)
 		std::uniform_int_distribution<> distribY(1, SCREEN_HEIGHT - rect.h);
 		int yNum = distribY(gen);
 
-		printf("X num: %d\n", xNum);
-		printf("Y num: %d\n", yNum);
+		/*printf("X num: %d\n", xNum);
+		printf("Y num: %d\n", yNum);*/
 		
 		// Case if square is in the left or right section of window
 		if (xNum <= SCREEN_WIDTH / 3 || xNum >= ((SCREEN_WIDTH / 3) * 2) && yNum <= SCREEN_HEIGHT / 3 || yNum >= (SCREEN_HEIGHT / 3) * 2)
@@ -282,4 +287,13 @@ SDL_Rect generateRect(int width, int height, int randFlag)
 	}
 
 	return rect;
+}
+
+// Fix collision
+bool collisionCheck(SDL_Rect& srcRect, SDL_Rect& destRect)
+{
+	bool collide = false;
+
+
+	return collide;
 }
