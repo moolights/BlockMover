@@ -252,16 +252,14 @@ SDL_Rect generateRect(int width, int height, int randFlag)
 	{
 		std::random_device rd;
 		std::mt19937 gen(rd());
-
-		std::uniform_int_distribution<> distribX(1, SCREEN_WIDTH - rect.w);
-		int xNum = distribX(gen);
-
-		std::uniform_int_distribution<> distribY(1, SCREEN_HEIGHT - rect.h);
-		int yNum = distribY(gen);
-
+		std::uniform_int_distribution<> distrib(1, SCREEN_WIDTH - rect.w);
+		int xNum = distrib(gen);
+		std::uniform_int_distribution<> distribe(1, SCREEN_HEIGHT - rect.h);
+		int yNum = distribe(gen);
 		printf("X num: %d\n", xNum);
 		printf("Y num: %d\n", yNum);
 		
+
 		// Case if square is in the left or right section of window
 		if (xNum <= SCREEN_WIDTH / 3 || xNum >= ((SCREEN_WIDTH / 3) * 2) && yNum <= SCREEN_HEIGHT / 3 || yNum >= (SCREEN_HEIGHT / 3) * 2)
 		{
