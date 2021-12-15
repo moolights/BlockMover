@@ -37,6 +37,8 @@ void close();
 
 SDL_Rect generateRect(int width, int height);
 
+SDL_Rect generateRect(int width, int height, int randFlag);
+
 SDL_Texture* loadTexture(std::string path);
 
 int main(int argv, char* argc[])
@@ -57,7 +59,7 @@ int main(int argv, char* argc[])
 			SDL_Event e;
 
 			SDL_Rect dRect = generateRect(100, 100); // Square that moves
-			SDL_Rect sRect; // Square that is stationary
+			SDL_Rect sRect = generateRect(100, 100, -1); // Square that is stationary
 
 			while (isRunning)
 			{
@@ -224,7 +226,43 @@ SDL_Rect generateRect(int width, int height)
 	rect.x = (SCREEN_WIDTH - rect.w) / 2;
 	rect.y = (SCREEN_HEIGHT - rect.h) / 2;
 
-	SDL_RenderCopy(gRenderer, gTextureSet[DYNAMIC_SQUARE_TEXTURE], &rect, &rect);
+	SDL_RenderCopy(gRenderer, gTextureSet[DYNAMIC_SQUARE_TEXTURE], &rect, &rect); // Applies texture to dynamic square
+
+	return rect;
+}
+
+SDL_Rect generateRect(int width, int height, int randFlag)
+{
+	SDL_Rect rect;
+
+	rect.w = width;
+	rect.h = height;
+
+	// Default location
+	if (randFlag == -1)
+	{
+		rect.x = 384;
+		rect.y = 216;
+	}
+	else
+	{
+		int xNum = rand() % SCREEN_WIDTH;
+		int yNum = rand() % SCREEN_HEIGHT;
+
+		// Case if square is in the left or right section of window
+		if (xNum <= SCREEN_WIDTH / 3 || xNum >= ((SCREEN_WIDTH / 3) * 2) && yNum <= SCREEN_HEIGHT / 3 || yNum >= (SCREEN_HEIGHT / 3) * 2)
+		{
+			rect.x = xNum;
+		}
+		// Case if square is in the middle section of window
+		else if (xNum < ((SCREEN_WIDTH / 3) * 2) && yNum <= SCREEN_HEIGHT / 3 || yNum >= (SCREEN_HEIGHT / 3) * 2)
+		{
+			rect.x = xNum;
+			rect.y = yNum;
+		}
+	}
+
+	return rect;
 }
 
 
