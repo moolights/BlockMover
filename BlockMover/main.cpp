@@ -245,8 +245,8 @@ SDL_Rect generateRect(int width, int height, int randFlag)
 	// Default location
 	if (randFlag == -1)
 	{
-		rect.x = 384;
-		rect.y = 216;
+		rect.x = 1601;
+		rect.y = 373;
 	}
 	else
 	{
@@ -264,6 +264,11 @@ SDL_Rect generateRect(int width, int height, int randFlag)
 		
 		// Case if square is in the left or right section of window
 		if (xNum <= SCREEN_WIDTH / 3 || xNum >= ((SCREEN_WIDTH / 3) * 2) && yNum <= SCREEN_HEIGHT / 3 || yNum >= (SCREEN_HEIGHT / 3) * 2)
+		{
+			rect.x = xNum;
+			rect.y = yNum;
+		}
+		else if (xNum > SCREEN_WIDTH / 3 && xNum < ((SCREEN_WIDTH / 3) * 2) && yNum > SCREEN_HEIGHT / 3 || yNum < (SCREEN_HEIGHT / 3) * 2)
 		{
 			rect.x = xNum;
 			rect.y = yNum;
