@@ -8,14 +8,13 @@
 const int SCREEN_WIDTH = 1920;
 const int SCREEN_HEIGHT = 1080;
 
-enum KeyPressTexture
+enum TextureSetValues
 {
-	KEY_PRESS_DEFAULT,
-	KEY_PRESS_UP,
-	KEY_PRESS_DOWN,
-	KEY_PRESS_LEFT,
-	KEY_PRESS_RIGHT,
-	KEY_PRESS_TOTAL
+	STATIC_SQUARE_TEXTURE,
+	DYNAMIC_SQUARE_TEXTURE,
+	WINDOW_ERROR_TEXTURE,
+	WINDOW_SUCCESS_TEXTURE,
+	TEXTURE_TOTAL
 };
 
 SDL_Window *gWindow = NULL;
@@ -28,7 +27,7 @@ SDL_Surface* gRectSurface = NULL; //Only used for the squares
 
 // The two squares dont need to be global and will go in main
 
-SDL_Texture* gTextureSet[KEY_PRESS_TOTAL];
+SDL_Texture* gTextureSet[TEXTURE_TOTAL];
 
 bool init();
 
@@ -81,7 +80,7 @@ bool init()
 			}
 			else
 			{
-				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+				SDL_SetRenderDrawColor(gRenderer, 100, 82, 86, 0xFF);
 
 				int imgFlags = IMG_INIT_PNG;
 				if (!(IMG_Init(imgFlags) & imgFlags))
@@ -98,17 +97,85 @@ bool init()
 
 bool loadMedia()
 {
+	bool success = true;
 
+	gTextureSet[STATIC_SQUARE_TEXTURE] = loadTexture("grey.png");
+	if (gTextureSet[STATIC_SQUARE_TEXTURE] == NULL)
+	{
+		printf("Failed to load image %s. SDL Error: %s", "grey.png", SDL_GetError());
+		success = false;
+	}
+
+	gTextureSet[DYNAMIC_SQUARE_TEXTURE] = loadTexture("LaCroixKitten.png");
+	if (gTextureSet[DYNAMIC_SQUARE_TEXTURE] == NULL)
+	{
+		printf("Failed to load image %s. SDL Error: %s", "LaCroixKitten.png", SDL_GetError());
+		success = false;
+	}
+
+	gTextureSet[WINDOW_ERROR_TEXTURE] = loadTexture("red.png");
+	if (gTextureSet[WINDOW_ERROR_TEXTURE] == NULL)
+	{
+		printf("Failed to load image %s. SDL Error: %s", "red.png", SDL_GetError());
+		success = false;
+	}
+
+	gTextureSet[WINDOW_SUCCESS_TEXTURE] = loadTexture("green.png");
+	if (gTextureSet[WINDOW_SUCCESS_TEXTURE] == NULL)
+	{
+		printf("Failed to load image %s. SDL Error: %s", "green.png", SDL_GetError());
+		success = false;
+	}
+
+	return success;
 }
 
 void close()
 {
+	SDL_DestroyRenderer(gRenderer);
+	SDL_DestroyWindow(gWindow);
+	gRenderer = NULL;
+	gWindow = NULL;
+
+	SDL_DestroyTexture(gCurrentTexture);
+	gCurrentTexture = NULL;
+
+	for (int i = 0; i < TEXTURE_TOTAL; i++)
+	{
+		SDL_DestroyTexture(gTextureSet[i]);
+		gTextureSet[i] = NULL;
+	}
+
+	SDL_FreeSurface(gRectSurface);
+	gRectSurface = NULL;
+
+	IMG_Quit();
+	SDL_Quit();
 
 }
 
 SDL_Texture* loadTexture(std::string path)
 {
 
+	SDL_Texture* newTexture = NULL;
+
+	SDL_Surface* loadedSurface = IMG_Load(path.c_str());
+	if (loadedSurface == NULL)
+	{
+		printf("Failed to load image %s. SDL_Image Error: %s", path.c_str(), IMG_GetError());
+	}
+	else
+	{
+		newTexture = SDL_CreateTextureFromSurface(gRenderer, loadedSurface);
+		if (newTexture == NULL)
+		{
+			printf("Failed to create texture from surface!\n");
+		}
+
+		SDL_FreeSurface(loadedSurface);
+	}
+
+	return newTexture;
 }
 
 
