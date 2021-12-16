@@ -19,6 +19,7 @@ enum TextureSetValues
 	TEXTURE_TOTAL
 };
 
+// Window being renderered to
 SDL_Window *gWindow = NULL;
 
 SDL_Renderer *gRenderer = NULL;
@@ -31,7 +32,7 @@ bool init();
 
 bool loadMedia(); // Loads media
 
-void close();
+void close(); // Closes systems
 
 SDL_Rect generateRect(int width, int height);
 
