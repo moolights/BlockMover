@@ -40,7 +40,7 @@ SDL_Rect generateRect(int width, int height, int randFlag);
 
 SDL_Texture* loadTexture(std::string path);
 
-bool collisionCheck(SDL_Rect& srcRect, SDL_Rect& destRect);
+bool collisionCheck(SDL_Rect srcRect, SDL_Rect destRect);
 
 int main(int argv, char* argc[])
 {
@@ -96,7 +96,13 @@ int main(int argv, char* argc[])
 					SDL_RenderCopy(gRenderer, gTextureSet[STATIC_SQUARE_TEXTURE], NULL, &sRect);
 					SDL_RenderPresent(gRenderer);
 
-					collisionCheck(dRect, sRect);
+					if (collisionCheck(dRect, sRect))
+					{
+						SDL_RenderCopy(gRenderer, gTextureSet[WINDOW_SUCCESS_TEXTURE], NULL, NULL);
+						SDL_RenderPresent(gRenderer);
+						SDL_Delay(50);
+						sRect = generateRect(100, 100, 0);
+					}
 				}
 			}
 		}
@@ -291,10 +297,34 @@ SDL_Rect generateRect(int width, int height, int randFlag)
 }
 
 // Fix collision
-bool collisionCheck(SDL_Rect& srcRect, SDL_Rect& destRect)
+bool collisionCheck(SDL_Rect srcRect, SDL_Rect destRect)
 {
 	bool collide = false;
 
+	if (srcRect.y >= destRect.y && srcRect.y <= (destRect.y + destRect.h) && 
+		(srcRect.x + srcRect.w) >= destRect.x && (srcRect.x + srcRect.w) <= (destRect.x + destRect.w))
+	{
+		collide = true;
+		//printf("Hit!");
+	}
+	else if (srcRect.y >= destRect.y && srcRect.y <= (destRect.y + destRect.h) &&
+		srcRect.x >= destRect.x && srcRect.x <= (destRect.x + destRect.w))
+	{
+		collide = true;
+		//printf("Hit!");
+	}
+	else if ((srcRect.y + srcRect.h) >= destRect.y && (srcRect.y + srcRect.h) <= (destRect.y + destRect.h) &&
+		srcRect.x >= destRect.x && srcRect.x <= (destRect.x + destRect.w))
+	{
+		collide = true;
+		//printf("Hit!");
+	}
+	else if ((srcRect.y + srcRect.h) >= destRect.y && (srcRect.y + srcRect.h) <= (destRect.y + destRect.h) &&
+		(srcRect.x + srcRect.w) >= destRect.x && (srcRect.x + srcRect.w) <= (destRect.x + destRect.w))
+	{
+		collide = true;
+		//printf("Hit!");
+	}
 
 	return collide;
 }
