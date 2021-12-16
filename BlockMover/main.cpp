@@ -29,7 +29,7 @@ SDL_Texture* gTextureSet[TEXTURE_TOTAL];
 
 bool init();
 
-bool loadMedia();
+bool loadMedia(); // Loads media
 
 void close();
 
